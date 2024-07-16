@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-import { TAuthenticateSchema } from "../auth/_pageResources/components/Form";
+import { TAuthenticateSchema } from "../auth/_pageResources/components/SignIn/SignIn";
 import { TUser } from "../_contexts/UserContext";
 
 type TToastError = {

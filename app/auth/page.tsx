@@ -9,3 +9,8 @@ export default function Home() {
     </Main>
   );
 }
+
+export const metadata = {
+  title: "Kevllotte - Sign in",
+  description: "Log in with your account to start publishing your posts",
+};

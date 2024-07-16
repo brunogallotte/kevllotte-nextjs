@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import { Form } from "../../components/Form";
+import { SignIn } from "../../components/SignIn/SignIn";
 
 import GridPattern from "@/app/_components/AnimatedGridPattern/AnimatedGridPattern";
 import { ContentWrapper } from "@/app/_components/ContentWrapper";
@@ -19,7 +19,7 @@ export const FormSection = () => {
         repeatDelay={1}
       />
       <div className="relative z-20 mx-auto lg:mx-0 lg:ml-auto w-full max-w-[350px] lg:bg-zinc-950">
-        <Form />
+        <SignIn />
       </div>
     </ContentWrapper>
   );

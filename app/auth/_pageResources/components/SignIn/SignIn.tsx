@@ -11,10 +11,11 @@ import Image from "next/image";
 import { Email, Locked } from "@carbon/icons-react";
 import { Toaster, toast } from "sonner";
 
-import { AuthAction } from "../../../_actions/auth-action";
-import { UserContext } from "../../../_contexts/UserContext";
+import { AuthAction } from "../../../../_actions/auth-action";
+import { UserContext } from "../../../../_contexts/UserContext";
+import { SignUp } from "../SignUp/SignUp";
 
-export const Form = () => {
+export const SignIn = () => {
   const { register, handleSubmit, formState } = useForm<TAuthenticateSchema>({
     resolver: zodResolver(authenticateSchema),
   });
@@ -50,7 +51,10 @@ export const Form = () => {
       />
       <h1 className="text-3xl font-bold mt-8">Sign in to Kevllotte</h1>
       <p className="text-zinc-300 mt-2">
-        Don’t have an account? <b className="text-sky-600">Sign up</b>
+        Don’t have an account?{" "}
+        <b className="text-sky-600">
+          <SignUp />
+        </b>
       </p>
 
       <Input
@@ -103,7 +107,7 @@ export const authenticateSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string({ required_error: "Password is required" })
-    .min(8, "Password must be at least 8 characters long"),
+    .min(8, "Password must have at least 8 characters long"),
 });
 
 export type TAuthenticateSchema = z.infer<typeof authenticateSchema>;
