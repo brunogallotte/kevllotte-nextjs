@@ -18,4 +18,6 @@ export const verifyJwtAction = async () => {
   if (!user) {
     redirect("/");
   }
+
+  return tokenJwt;
 };

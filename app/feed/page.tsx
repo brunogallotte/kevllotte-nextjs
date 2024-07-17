@@ -21,9 +21,14 @@ export default async function Page() {
 
   return (
     <Main stylization={{ theme: "dark" }}>
-      <ContentWrapper element="section">
+      <ContentWrapper className="pt-12" element="section">
         <Feed />
       </ContentWrapper>
     </Main>
   );
 }
+
+export const metadata = {
+  title: "Kevllotte - Feed",
+  description: "Feed",
+};
