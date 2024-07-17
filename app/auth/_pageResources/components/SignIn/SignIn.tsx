@@ -38,11 +38,8 @@ export const SignIn = () => {
   };
 
   return (
-    <form
-      className="p-6 mx-auto min-h-screen justify-center w-full flex flex-col items-center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Toaster theme="dark" />
+    <div className="mx-auto min-h-screen justify-center w-full flex flex-col items-center">
+      <Toaster className="z-40" theme="dark" />
       <Image
         alt="Kevllotte"
         height={100}
@@ -56,48 +53,49 @@ export const SignIn = () => {
           <SignUp />
         </b>
       </p>
+      <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          classNames={{ mainWrapper: "mt-12", label: "!text-zinc-300" }}
+          errorMessage={formState.errors.email?.message}
+          isInvalid={formState.errors.email?.message ? true : false}
+          label="Email address"
+          labelPlacement="outside"
+          placeholder="Enter your e-mail"
+          size="lg"
+          startContent={<Email className="text-zinc-500 min-w-6 min-h-6" />}
+          variant="bordered"
+          {...register("email")}
+        />
 
-      <Input
-        classNames={{ mainWrapper: "mt-12", label: "!text-zinc-300" }}
-        errorMessage={formState.errors.email?.message}
-        isInvalid={formState.errors.email?.message ? true : false}
-        label="Email address"
-        labelPlacement="outside"
-        placeholder="Enter your e-mail"
-        size="lg"
-        startContent={<Email className="text-zinc-500 min-w-6 min-h-6" />}
-        variant="bordered"
-        {...register("email")}
-      />
+        <Input
+          isClearable
+          classNames={{ mainWrapper: "mt-6", label: "!text-zinc-300" }}
+          errorMessage={formState.errors.password?.message}
+          isInvalid={formState.errors.password?.message ? true : false}
+          label="Password"
+          labelPlacement="outside"
+          placeholder="Enter your password"
+          size="lg"
+          startContent={<Locked className="text-zinc-500 min-w-6 min-h-6" />}
+          type="password"
+          variant="bordered"
+          {...register("password")}
+        />
+        <span className="text-sky-600 mt-2 mr-auto">Forget you password?</span>
 
-      <Input
-        isClearable
-        classNames={{ mainWrapper: "mt-6", label: "!text-zinc-300" }}
-        errorMessage={formState.errors.password?.message}
-        isInvalid={formState.errors.password?.message ? true : false}
-        label="Password"
-        labelPlacement="outside"
-        placeholder="Enter your password"
-        size="lg"
-        startContent={<Locked className="text-zinc-500 min-w-6 min-h-6" />}
-        type="password"
-        variant="bordered"
-        {...register("password")}
-      />
-      <span className="text-sky-600 mt-2 mr-auto">Forget you password?</span>
-
-      <Button
-        className="w-full mt-8"
-        color="primary"
-        disabled={formState.isSubmitting}
-        isLoading={formState.isSubmitting}
-        size="lg"
-        type="submit"
-        variant="shadow"
-      >
-        Login
-      </Button>
-    </form>
+        <Button
+          className="w-full mt-8"
+          color="primary"
+          disabled={formState.isSubmitting}
+          isLoading={formState.isSubmitting}
+          size="lg"
+          type="submit"
+          variant="shadow"
+        >
+          Login
+        </Button>
+      </form>
+    </div>
   );
 };
 

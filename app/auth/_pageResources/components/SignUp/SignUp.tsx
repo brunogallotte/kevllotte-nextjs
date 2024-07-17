@@ -1,6 +1,5 @@
 "use client";
 
-import { Email, Locked } from "@carbon/icons-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/button";
 import { Input, Textarea } from "@nextui-org/input";
@@ -11,20 +10,58 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/modal";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { ArrowRight } from "@carbon/icons-react";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Progress } from "@nextui-org/progress";
+import { toast } from "sonner";
+
+import { TSignUpSchema, signUpConfig } from "./config";
+
+import { RegisterAction } from "@/app/_actions/register-action";
 
 export const SignUp = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [step, setStep] = useState<number>(0);
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { register, handleSubmit, formState } = useForm<TSignUpSchema>({
-    resolver: zodResolver(signupSchema),
-  });
+  const { register, handleSubmit, formState, setError, watch } =
+    useForm<TSignUpSchema>({
+      resolver: zodResolver(signUpConfig[step].schema),
+    });
 
   const onSubmit = async (data: TSignUpSchema) => {
     console.log(data);
+
+    if (step === 3) {
+      if (data.password !== data.confirmPassword) {
+        return setError("confirmPassword", {
+          message: "Passwords dos not match",
+        });
+      }
+    }
+
+    if (step < signUpConfig.length - 1) {
+      return setStep(step + 1);
+    }
+
+    const responseRegister = await RegisterAction(data);
+
+    if (responseRegister.status === "success") {
+      toast.success(responseRegister.title, {
+        description: responseRegister.description,
+      });
+
+      onClose();
+    } else {
+      toast.error(responseRegister.title, {
+        description: responseRegister.description,
+      });
+      onClose();
+    }
   };
+
+  const isTermsAccepted = watch("acceptTerms");
 
   return (
     <>
@@ -32,7 +69,7 @@ export const SignUp = () => {
         Sign up
       </span>
       <Modal
-        className="bg-zinc-950 border border-zinc-900"
+        className="bg-zinc-950 border border-zinc-900 pb-4"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
@@ -42,107 +79,135 @@ export const SignUp = () => {
               <ModalHeader className="flex flex-col gap-1">Sign up</ModalHeader>
               <ModalBody>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Input
-                    classNames={{
-                      mainWrapper: "mt-6",
-                      label: "!text-zinc-300",
-                    }}
-                    errorMessage={formState.errors.email?.message}
-                    isInvalid={formState.errors.email?.message ? true : false}
-                    label="Email address"
-                    labelPlacement="outside"
-                    placeholder="Enter your e-mail"
-                    size="lg"
-                    startContent={
-                      <Email className="text-zinc-500 min-w-6 min-h-6" />
-                    }
-                    variant="bordered"
-                    {...register("email")}
-                  />
-                  <Input
-                    classNames={{
-                      mainWrapper: "mt-6",
-                      label: "!text-zinc-300",
-                    }}
-                    errorMessage={formState.errors.email?.message}
-                    isInvalid={formState.errors.email?.message ? true : false}
-                    label="Email address"
-                    labelPlacement="outside"
-                    placeholder="Enter your e-mail"
-                    size="lg"
-                    startContent={
-                      <Email className="text-zinc-500 min-w-6 min-h-6" />
-                    }
-                    variant="bordered"
-                    {...register("email")}
-                  />
-                  <Input
-                    isClearable
-                    classNames={{
-                      mainWrapper: "mt-6",
-                      label: "!text-zinc-300",
-                    }}
-                    errorMessage={formState.errors.password?.message}
-                    isInvalid={
-                      formState.errors.password?.message ? true : false
-                    }
-                    label="Password"
-                    labelPlacement="outside"
-                    placeholder="Enter your password"
-                    size="lg"
-                    startContent={
-                      <Locked className="text-zinc-500 min-w-6 min-h-6" />
-                    }
-                    type="password"
-                    variant="bordered"
-                    {...register("password")}
-                  />
-                  <Input
-                    isClearable
-                    classNames={{
-                      mainWrapper: "mt-6",
-                      label: "!text-zinc-300",
-                    }}
-                    errorMessage={formState.errors.confirmPassword?.message}
-                    isInvalid={
-                      formState.errors.confirmPassword?.message ? true : false
-                    }
-                    label="Confirm Password"
-                    labelPlacement="outside"
-                    placeholder="Confirm your password"
-                    size="lg"
-                    startContent={
-                      <Locked className="text-zinc-500 min-w-6 min-h-6" />
-                    }
-                    type="password"
-                    variant="bordered"
-                    {...register("confirmPassword")}
-                  />
-                  <Textarea
-                    className="mt-6"
-                    classNames={{
-                      mainWrapper: "mt-6",
-                      label: "!text-zinc-300",
-                    }}
-                    label="Bio"
-                    labelPlacement="outside"
-                    placeholder="Tell us about yourself"
-                    size="lg"
-                    variant="bordered"
-                    {...register("bio")}
-                  />
-                  <div className="w-full flex justify-end gap-3 mt-6 pb-4">
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Close
-                    </Button>
-                    <Button
-                      color="primary"
-                      isLoading={formState.isSubmitting}
-                      type="submit"
-                    >
-                      Action
-                    </Button>
-                  </div>
+                  {step === 0 && (
+                    <div className="flex flex-col w-full gap-4">
+                      <b className="text-xl text-zinc-100">
+                        Sign Up for Your Account
+                      </b>
+                      <p className="text-zinc-400">
+                        Welcome! This is the Sign Up form for creating your
+                        account. To get started, please complete all the
+                        required steps. We look forward to having you join our
+                        community!
+                      </p>
+                      <Checkbox value="sim" {...register("acceptTerms")}>
+                        I agree to the{" "}
+                        <span className="text-sky-600 font-medium">
+                          Terms of Service
+                        </span>{" "}
+                        and{" "}
+                        <span className="text-sky-600 font-medium">
+                          Privacy Policy
+                        </span>
+                      </Checkbox>
+
+                      <Button
+                        color="primary"
+                        endContent={<ArrowRight />}
+                        isDisabled={!isTermsAccepted}
+                        isLoading={formState.isSubmitting}
+                        type="submit"
+                      >
+                        Create Account
+                      </Button>
+                    </div>
+                  )}
+
+                  {signUpConfig[step].input && (
+                    <Input
+                      {...(signUpConfig[step].input as any)}
+                      errorMessage={
+                        formState.errors[
+                          signUpConfig[step].name as keyof TSignUpSchema
+                        ]?.message
+                      }
+                      isInvalid={
+                        !!formState.errors[
+                          signUpConfig[step].name as keyof TSignUpSchema
+                        ]?.message
+                      }
+                      {...register(
+                        signUpConfig[step].name as keyof TSignUpSchema
+                      )}
+                    />
+                  )}
+
+                  {signUpConfig[step].inputs && (
+                    <div className="flex flex-col gap-6">
+                      {signUpConfig[step].inputs?.map((input, index) => (
+                        <Input
+                          key={input.label}
+                          {...(signUpConfig[step].inputs?.[index] as any)}
+                          errorMessage={
+                            formState.errors[
+                              signUpConfig[step].name[
+                                index
+                              ] as keyof TSignUpSchema
+                            ]?.message
+                          }
+                          isInvalid={
+                            !!formState.errors[
+                              signUpConfig[step].name[
+                                index
+                              ] as keyof TSignUpSchema
+                            ]?.message
+                          }
+                          {...register(
+                            signUpConfig[step].name[
+                              index
+                            ] as keyof TSignUpSchema
+                          )}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {signUpConfig[step].textarea && (
+                    <Textarea
+                      {...(signUpConfig[step].textarea as any)}
+                      errorMessage={
+                        formState.errors[
+                          signUpConfig[step].name as keyof TSignUpSchema
+                        ]?.message
+                      }
+                      isInvalid={
+                        !!formState.errors[
+                          signUpConfig[step].name as keyof TSignUpSchema
+                        ]?.message
+                      }
+                      {...register(
+                        signUpConfig[step].name as keyof TSignUpSchema
+                      )}
+                    />
+                  )}
+                  {step !== 0 && (
+                    <>
+                      <div className="w-full flex justify-end gap-3 mt-6">
+                        <Button
+                          color="danger"
+                          variant="light"
+                          onClick={() => setStep(step - 1)}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          color="primary"
+                          endContent={<ArrowRight />}
+                          isLoading={formState.isSubmitting}
+                          type="submit"
+                        >
+                          Continue
+                        </Button>
+                      </div>
+                      <Progress
+                        className="mt-6"
+                        color="default"
+                        maxValue={signUpConfig.length}
+                        size="sm"
+                        value={step}
+                      />
+                    </>
+                  )}
                 </form>
               </ModalBody>
             </>
@@ -152,19 +217,3 @@ export const SignUp = () => {
     </>
   );
 };
-
-type TSignUpSchema = z.infer<typeof signupSchema>;
-
-export const signupSchema = z.object({
-  name: z.string({ required_error: "Name is required" }),
-  email: z
-    .string({ required_error: "Email is required" })
-    .email("Invalid email address"),
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(8, "Password must have at least 8 characters long"),
-  confirmPassword: z
-    .string({ message: "Please, confirm your password" })
-    .min(8, "Password must have at least 8 characters long"),
-  bio: z.string().min(10, "Bio must have at least 10 characters long"),
-});
