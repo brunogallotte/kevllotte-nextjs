@@ -1,12 +1,17 @@
+import Link from "next/link";
+import { User } from "@nextui-org/user";
+
 import { PrevPost, TPrevPostProps } from "./PrevPost/PrevPost";
 
+import { ContentWrapper } from "@/app/_components/ContentWrapper";
 import { verifyJwtAction } from "@/app/_actions/verify-jwt-action";
+import { Aside } from "./Aside/Aside";
 
 export const Feed = async () => {
   const tokenJwt = await verifyJwtAction();
 
   const responseOfFetchUserPosts = await fetch(
-    "https://kevllotte-api.onrender.com/users/posts",
+    `${process.env.KEVLLOTTE_API_URL}/posts`,
     {
       method: "GET",
       headers: {
@@ -19,13 +24,13 @@ export const Feed = async () => {
   const postsOfUser = await responseOfFetchUserPosts.json();
 
   return (
-    <div>
-      <h1>Feed</h1>
+    <ContentWrapper className="pt-12 flex" element="section">
       <div className="w-full flex flex-col gap-8">
         {postsOfUser.posts.map((post: TPrevPostProps) => (
           <PrevPost key={post.id} {...post} />
         ))}
       </div>
-    </div>
+      <Aside />
+    </ContentWrapper>
   );
 };
