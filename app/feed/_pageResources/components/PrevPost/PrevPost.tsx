@@ -6,19 +6,36 @@ import { ArrowRight, Badge } from "@carbon/icons-react";
 import { useState } from "react";
 import { Image } from "@nextui-org/image";
 
-import { fetchAddLikeForPost } from "./fetchs/fetch-add-like-for-post";
+import {
+  TFetchAddOrRemoveLikeForPost,
+  fetchAddOrRemoveLikeForPost,
+} from "./fetchs/fetch-add-like-for-post";
+import { fetchSavePost } from "./fetchs/fetch-save-post";
+import { MoreOptionsDropdown } from "./Dropdown/Dropdown";
 
 import { HeartFilledIcon } from "@/components/icons";
 
 export const PrevPost = (props: TPrevPostProps) => {
   const [likesLength, setLikesLength] = useState<number>(props.likes.length);
 
-  const handleAddLikeForPost = async (postId: string) => {
-    const responseFetchAddLikeForPost = await fetchAddLikeForPost(postId);
+  const handleAddLikeForPost = async ({
+    postId,
+    postLike,
+  }: TFetchAddOrRemoveLikeForPost) => {
+    const responseFetchAddLikeForPost = await fetchAddOrRemoveLikeForPost({
+      postId,
+      postLike,
+    });
 
     if (responseFetchAddLikeForPost === 201) {
-      setLikesLength(likesLength + 1);
+      return setLikesLength(likesLength + 1);
     }
+
+    setLikesLength(likesLength - 1);
+  };
+
+  const handleSavePost = async (postId: string) => {
+    const responseFetchSavePost = await fetchSavePost(postId);
   };
 
   return (
@@ -64,7 +81,9 @@ export const PrevPost = (props: TPrevPostProps) => {
             color="danger"
             size="sm"
             variant="flat"
-            onClick={() => handleAddLikeForPost(props.id)}
+            onClick={() =>
+              handleAddLikeForPost({ postId: props.id, postLike: props.likes })
+            }
           >
             <HeartFilledIcon className="w-4 h-4" />
             {likesLength}
@@ -75,10 +94,13 @@ export const PrevPost = (props: TPrevPostProps) => {
             color="warning"
             size="sm"
             variant="flat"
+            onClick={() => handleSavePost(props.id)}
           >
             <Badge className="w-4 h-4" />
             Save this post
           </Button>
+
+          <MoreOptionsDropdown />
         </div>
       </footer>
     </div>

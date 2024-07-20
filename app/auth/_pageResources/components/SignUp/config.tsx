@@ -16,6 +16,12 @@ const nameSchema = z.object({
     .min(1, "Name is required"),
 });
 
+const usernameSchema = z.object({
+  username: z
+    .string({ required_error: "Username is required" })
+    .min(4, "Username must be at least 4 characters"),
+});
+
 const emailSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
@@ -53,6 +59,7 @@ const acceptTermsSchema = z.object({
 const signupSchema = acceptTermsSchema
   .and(nameSchema)
   .and(emailSchema)
+  .and(usernameSchema)
   .and(passwordSchema)
   .and(bioSchema)
   .and(socialLinksSchema);
@@ -93,6 +100,19 @@ export const signUpConfig = [
     },
     schema: emailSchema,
     name: "email",
+  },
+  {
+    input: {
+      label: "Username",
+      labelPlacement: "outside",
+      placeholder: "Enter your username",
+      size: "lg",
+      startContent: <Email className="text-zinc-500 min-w-6 min-h-6" />,
+      variant: "bordered",
+      isRequired: true,
+    },
+    schema: usernameSchema,
+    name: "username",
   },
   {
     inputs: [

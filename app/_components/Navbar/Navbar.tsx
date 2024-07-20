@@ -1,4 +1,5 @@
 import { Home } from "@carbon/icons-react";
+import { User } from "@nextui-org/user";
 import Link from "next/link";
 
 export const Navbar = () => {
@@ -9,6 +10,8 @@ export const Navbar = () => {
           <Home />
         </div>
       </Link>
+
+      <User />
     </nav>
   );
 };

@@ -6,7 +6,10 @@ export const MostRatedPost = ({
   numberOfLikes,
 }: TMostRatedPost) => {
   return (
-    <Link className="w-full p-3 hover:bg-zinc-900/50 transition-all duration-300 rounded-lg" href="#">
+    <Link
+      className="w-full p-3 hover:bg-zinc-900/50 transition-all duration-300 rounded-lg"
+      href="#"
+    >
       <b className="font-medium">{title}</b>
 
       <footer className="flex items-center justify-between mt-2">

@@ -2,13 +2,41 @@
 
 import { cookies } from "next/headers";
 
-export const fetchAddLikeForPost = async (postId: string): Promise<number> => {
+export const fetchAddOrRemoveLikeForPost = async ({
+  postId,
+  postLike,
+}: TFetchAddOrRemoveLikeForPost): Promise<number> => {
   const tokenJwt = cookies().get("tokenAccess");
 
-  console.log(tokenJwt?.value);
-  console.log(postId);
+  const user = await fetch(`${process.env.KEVLLOTTE_API_URL}/me`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${tokenJwt?.value}`,
+    },
+  });
 
-  const response = await fetch(
+  const userData = await user.json();
+
+  const userHasLiked = postLike.find(
+    (like) => like.authorId === userData.author.id,
+  );
+
+  if (userHasLiked) {
+    const responseDeleteOfLike = await fetch(
+      `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes/${userHasLiked.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenJwt?.value}`,
+        },
+      },
+    );
+
+    return responseDeleteOfLike.status;
+  }
+
+  const responseOfAddLikeForPost = await fetch(
     `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
     {
       method: "POST",
@@ -22,7 +50,15 @@ export const fetchAddLikeForPost = async (postId: string): Promise<number> => {
     },
   );
 
-  console.log(response.status);
+  return responseOfAddLikeForPost.status;
+};
 
-  return response.status;
+export type TFetchAddOrRemoveLikeForPost = {
+  postId: string;
+  postLike: {
+    id: string;
+    authorId: string;
+    postId: string;
+    createdAt: Date;
+  }[];
 };

@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+// TODO: Need implements refresh token
+
 export const verifyJwtAction = async () => {
   const tokenJwt = cookies().get("tokenAccess");
 
@@ -15,8 +17,8 @@ export const verifyJwtAction = async () => {
     },
   });
 
-  if (!user) {
-    redirect("/");
+  if (user.status !== 200) {
+    redirect("/auth");
   }
 
   return tokenJwt;
