@@ -26,6 +26,7 @@ type TUserContextType = {
 export type TUser = {
   author: {
     id: string;
+    username: string;
     name: string;
     email: string;
     bio?: string;

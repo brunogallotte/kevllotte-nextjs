@@ -23,7 +23,7 @@ export const fetchAddOrRemoveLikeForPost = async ({
 
   if (userHasLiked) {
     const responseDeleteOfLike = await fetch(
-      `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes/${userHasLiked.id}`,
+      `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
       {
         method: "DELETE",
         headers: {
