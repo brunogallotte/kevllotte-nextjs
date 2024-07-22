@@ -28,7 +28,7 @@ export function PrevPostSkeleton() {
               <Skeleton className="mt-1 h-4 w-2/5 rounded-small bg-zinc-900" />
             </div>
 
-            <Skeleton className="aspect-video w-[250px] rounded-small bg-zinc-900" />
+            <Skeleton className="aspect-video w-[250px] rounded-large bg-zinc-900" />
           </div>
 
           <footer className="mt-4 flex items-center">

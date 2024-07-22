@@ -1,6 +1,6 @@
 'use server'
 
-import { TSignUpSchema } from '../auth/_pageResources/components/SignUp/config'
+import { TSignUpSchema } from '../(auth)/auth/_pageResources/components/SignUp/config'
 
 type TToast = {
   status: 'success' | 'error'

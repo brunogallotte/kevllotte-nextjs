@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 
-import { Main } from '../_components/Main'
-import { Navbar } from '../_components/Navbar/Navbar'
+import { Main } from '../../_components/Main'
+import { Navbar } from '../../_components/Navbar/Navbar'
 import { Feed } from './_pageResources/components/Feed'
 import { FeedSkeleton } from './_pageResources/components/Skeleton'
 

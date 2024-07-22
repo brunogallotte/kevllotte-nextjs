@@ -10,7 +10,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { AuthAction } from '../../../../_actions/auth-action'
+import { AuthAction } from '@/app/_actions/auth-action'
+
 import { SignUp } from '../SignUp/SignUp'
 
 export const SignIn = () => {

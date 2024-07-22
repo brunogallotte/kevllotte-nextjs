@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 
 import type { TUser } from '@/types'
 
-import { TAuthenticateSchema } from '../auth/_pageResources/components/SignIn/SignIn'
+import { TAuthenticateSchema } from '../(auth)/auth/_pageResources/components/SignIn/SignIn'
 
 type TToastError = {
   title: string

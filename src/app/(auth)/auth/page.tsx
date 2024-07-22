@@ -1,4 +1,5 @@
-import { Main } from '../_components/Main'
+import { Main } from '@/app/_components/Main'
+
 import { FormSection } from './_pageResources/sections/FormSection/FormSection'
 
 export default function Home() {
