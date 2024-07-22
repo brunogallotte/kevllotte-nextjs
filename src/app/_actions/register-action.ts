@@ -24,7 +24,7 @@ export const RegisterAction = async (props: TSignUpSchema): Promise<TToast> => {
     return {
       status: 'success',
       title: 'Success',
-      description: 'User registered successfully. Please, sign-in to continue.',
+      description: 'User registered successfully! Please, sign-in to continue.',
     }
   } else if (responseData.status === 409) {
     return {

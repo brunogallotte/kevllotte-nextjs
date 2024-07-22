@@ -4,7 +4,8 @@ import { ArrowRight, Badge } from '@carbon/icons-react'
 import { Button } from '@nextui-org/button'
 import { Image } from '@nextui-org/image'
 import { formatDistanceToNow } from 'date-fns'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { HeartFilledIcon } from '@/components/icons'
 
@@ -13,31 +14,45 @@ import {
   fetchAddOrRemoveLikeForPost,
   TFetchAddOrRemoveLikeForPost,
 } from './fetchs/fetch-add-like-for-post'
-import { fetchSavePost } from './fetchs/fetch-save-post'
+import { fetchSaveOrRemoveSavedPost } from './fetchs/fetch-save-or-remove-saved-post'
 
 export const PrevPost = (props: TPrevPostProps) => {
   const [likesLength, setLikesLength] = useState<number>(props.likes.length)
+  const [isPending, startTransition] = useTransition()
 
   const handleAddLikeForPost = async ({
     postId,
-    postLike,
   }: TFetchAddOrRemoveLikeForPost) => {
-    const responseFetchAddLikeForPost = await fetchAddOrRemoveLikeForPost({
-      postId,
-      postLike,
+    startTransition(async () => {
+      const responseFetchAddLikeForPost = await fetchAddOrRemoveLikeForPost({
+        postId,
+      })
+
+      if (responseFetchAddLikeForPost === 201) {
+        return setLikesLength(likesLength + 1)
+      }
+
+      setLikesLength(likesLength - 1)
     })
-
-    if (responseFetchAddLikeForPost === 201) {
-      return setLikesLength(likesLength + 1)
-    }
-
-    setLikesLength(likesLength - 1)
   }
 
   const handleSavePost = async (postId: string) => {
-    const responseFetchSavePost = await fetchSavePost(postId)
+    const saveOrRemoveSavedPostResponse =
+      await fetchSaveOrRemoveSavedPost(postId)
 
-    console.log(responseFetchSavePost)
+    if (saveOrRemoveSavedPostResponse.status === 200) {
+      toast.success(saveOrRemoveSavedPostResponse.title, {
+        description: saveOrRemoveSavedPostResponse.description,
+      })
+    } else if (saveOrRemoveSavedPostResponse.status === 404) {
+      toast.success('Error!', {
+        description: 'Post not found. Please try again later.',
+      })
+    } else {
+      toast.success('Error!', {
+        description: 'There was an error when trying to save the post.',
+      })
+    }
   }
 
   return (
@@ -88,12 +103,10 @@ export const PrevPost = (props: TPrevPostProps) => {
             color="danger"
             size="sm"
             variant="flat"
-            onClick={() =>
-              handleAddLikeForPost({ postId: props.id, postLike: props.likes })
-            }
+            isDisabled={isPending}
+            onClick={() => handleAddLikeForPost({ postId: props.id })}
           >
-            {/* TODO: LOGIC TO SET FILL TO RED ONLY WHEN USER HAVE LIKED THE POST */}
-            <HeartFilledIcon fill="red" className="h-4 w-4" />
+            <HeartFilledIcon className="h-4 w-4" />
             {likesLength}
           </Button>
 
@@ -115,6 +128,13 @@ export const PrevPost = (props: TPrevPostProps) => {
   )
 }
 
+export type TPrevPostLikeProps = {
+  id: string
+  authorId: string
+  postId: string
+  createdAt: Date
+}
+
 export type TPrevPostProps = {
   id: string
   title: string
@@ -124,14 +144,7 @@ export type TPrevPostProps = {
   slug: {
     value: string
   }
-  likes: [
-    {
-      id: string
-      authorId: string
-      postId: string
-      createdAt: Date
-    },
-  ]
+  likes: TPrevPostLikeProps[]
   createdAt: string
   updatedAt: string
 }

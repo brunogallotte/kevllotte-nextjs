@@ -7,7 +7,7 @@ import { Input } from '@nextui-org/input'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { toast, Toaster } from 'sonner'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { AuthAction } from '../../../../_actions/auth-action'
@@ -34,7 +34,6 @@ export const SignIn = () => {
 
   return (
     <div className="mx-auto flex min-h-screen w-full flex-col items-center justify-center">
-      <Toaster className="z-40" theme="dark" />
       <Image
         alt="Kevllotte"
         height={100}

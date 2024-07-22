@@ -17,7 +17,7 @@ export const PopularAuthor = ({
           src: avatarUrl,
         }}
         classNames={{ description: 'text-sky-600' }}
-        description={`$${author}`}
+        description={`@${author}`}
         name={name}
       />
       <div className="rounded-xl p-1 px-3 text-xl font-bold text-zinc-700">

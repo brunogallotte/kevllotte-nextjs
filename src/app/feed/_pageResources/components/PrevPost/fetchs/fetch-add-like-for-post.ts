@@ -1,48 +1,61 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { verifyJwtAction } from '@/app/_actions/verify-jwt-action'
+
+import type { TPrevPostLikeProps } from '../PrevPost'
 
 export const fetchAddOrRemoveLikeForPost = async ({
   postId,
-  postLike,
 }: TFetchAddOrRemoveLikeForPost): Promise<number> => {
-  const tokenJwt = cookies().get('tokenAccess')
+  const tokenJwt = await verifyJwtAction()
 
   const user = await fetch(`${process.env.KEVLLOTTE_API_URL}/me`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${tokenJwt?.value}`,
+      Authorization: `Bearer ${tokenJwt.value}`,
     },
   })
 
   const userData = await user.json()
 
-  const userHasLiked = postLike.find(
+  const postLikes = await fetch(
+    `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenJwt.value}`,
+      },
+    },
+  )
+
+  const postLikesData: TPostLikesData = await postLikes.json()
+
+  const userHasLiked = postLikesData.postLikes.find(
     (like) => like.authorId === userData.author.id,
   )
 
   if (userHasLiked) {
-    const responseDeleteOfLike = await fetch(
+    const deleteLikeResponse = await fetch(
       `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
       {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${tokenJwt?.value}`,
+          Authorization: `Bearer ${tokenJwt.value}`,
         },
       },
     )
 
-    return responseDeleteOfLike.status
+    return deleteLikeResponse.status
   }
 
-  const responseOfAddLikeForPost = await fetch(
+  const addPostLikeResponse = await fetch(
     `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${tokenJwt?.value}`,
+        Authorization: `Bearer ${tokenJwt.value}`,
       },
       body: JSON.stringify({
         postId,
@@ -50,15 +63,13 @@ export const fetchAddOrRemoveLikeForPost = async ({
     },
   )
 
-  return responseOfAddLikeForPost.status
+  return addPostLikeResponse.status
+}
+
+export type TPostLikesData = {
+  postLikes: TPrevPostLikeProps[]
 }
 
 export type TFetchAddOrRemoveLikeForPost = {
   postId: string
-  postLike: {
-    id: string
-    authorId: string
-    postId: string
-    createdAt: Date
-  }[]
 }
