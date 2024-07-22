@@ -32,13 +32,7 @@ export const MoreOptionsDropdown = () => {
         radius="sm"
       >
         <DropdownTrigger>
-          <Button
-            className="rounded-full"
-            disableRipple
-            size="sm"
-            isIconOnly
-            variant="ghost"
-          >
+          <Button disableRipple size="sm" isIconOnly variant="ghost">
             <OverflowMenuVertical />
           </Button>
         </DropdownTrigger>

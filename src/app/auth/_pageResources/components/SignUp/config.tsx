@@ -67,7 +67,7 @@ const signupSchema = acceptTermsSchema
 export const signUpConfig = [
   {
     checkbox: {
-      label: 'Name',
+      label: '',
       labelPlacement: 'outside',
       placeholder: 'Enter your name',
       size: 'lg',

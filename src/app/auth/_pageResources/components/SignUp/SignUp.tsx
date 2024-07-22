@@ -25,10 +25,15 @@ export const SignUp = () => {
   const [step, setStep] = useState<number>(0)
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
-  const { register, handleSubmit, formState, setError, watch } =
+  const { register, handleSubmit, formState, setError, reset, watch } =
     useForm<TSignUpSchema>({
       resolver: zodResolver(signUpConfig[step].schema),
     })
+
+  const handleFormReset = async () => {
+    setStep(0)
+    reset()
+  }
 
   const onSubmit = async (data: TSignUpSchema) => {
     console.log(data)
@@ -72,6 +77,7 @@ export const SignUp = () => {
         className="border border-zinc-900 bg-zinc-950 pb-4"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        onClose={handleFormReset}
       >
         <ModalContent>
           {(onClose) => (

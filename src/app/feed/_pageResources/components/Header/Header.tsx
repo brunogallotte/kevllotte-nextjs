@@ -23,7 +23,7 @@ export const Header = () => {
         className="max-w-[250px]"
         classNames={{ inputWrapper: '!bg-zinc-900' }}
         startContent={<Search className="text-zinc-500" />}
-        placeholder="Search for some post"
+        placeholder="Search"
         variant="flat"
       />
     </header>

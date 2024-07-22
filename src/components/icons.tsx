@@ -133,6 +133,30 @@ export const SunFilledIcon = ({
   </svg>
 )
 
+// export const HeartIcon = ({
+//   size = 24,
+//   width,
+//   height,
+//   ...props
+// }: IconSvgProps) => (
+//   <svg
+//     aria-hidden="true"
+//     focusable="false"
+//     height={size || height}
+//     role="presentation"
+//     viewBox="0 0 24 24"
+//     width={size || width}
+//     {...props}
+//   >
+//     <path d="M22.45 6a5.47 5.47 0 013.91 1.64 5.7 5.7 0 010 8L16 26.13 5.64 15.64a5.7 5.7 0 010-8 5.48 5.48 0 017.82 0l2.54 2.6 2.53-2.58A5.44 5.44 0 0122.45 6m0-2a7.47 7.47 0 00-5.34 2.24L16 7.36l-1.11-1.12a7.49 7.49 0 00-10.68 0 7.72 7.72 0 000 10.82L16 29l11.79-11.94a7.72 7.72 0 000-10.82A7.49 7.49 0 0022.45 4z" />
+//     <path
+//       data-name="&lt;Transparent Rectangle&gt;"
+//       fill="none"
+//       d="M0 0H32V32H0z"
+//     />
+//   </svg>
+// )
+
 export const HeartFilledIcon = ({
   size = 24,
   width,
@@ -150,7 +174,7 @@ export const HeartFilledIcon = ({
   >
     <path
       d="M12.62 20.81c-.34.12-.9.12-1.24 0C8.48 19.82 2 15.69 2 8.69 2 5.6 4.49 3.1 7.56 3.1c1.82 0 3.43.88 4.44 2.24a5.53 5.53 0 0 1 4.44-2.24C19.51 3.1 22 5.6 22 8.69c0 7-6.48 11.13-9.38 12.12Z"
-      fill="currentColor"
+      fill={props.fill ?? 'white'}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}

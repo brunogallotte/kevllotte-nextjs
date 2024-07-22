@@ -36,6 +36,8 @@ export const PrevPost = (props: TPrevPostProps) => {
 
   const handleSavePost = async (postId: string) => {
     const responseFetchSavePost = await fetchSavePost(postId)
+
+    console.log(responseFetchSavePost)
   }
 
   return (
@@ -44,15 +46,20 @@ export const PrevPost = (props: TPrevPostProps) => {
         <Image alt="Kevllotte" className="max-w-5" src="/kevllotte-logo.png" />
 
         <div className="flex items-center gap-1">
-          <span className="text-zinc-100">@brunogallotte</span>
+          <span className="text-zinc-100">@{props.userId}</span>
           <span> & other username</span>
         </div>
       </header>
 
       <div className="mt-4 flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <b className="text-3xl text-zinc-100">{props.title}</b>
-          <p className="mt-3 text-lg text-zinc-200">{props.content}</p>
+        <div className="flex w-full max-w-md flex-col gap-1 overflow-hidden">
+          <b className="truncate text-3xl text-zinc-100">
+            abshkdgasdgasgdhkasgdhkasgdhkasgdhkasgkdhgashkg
+          </b>
+          <p className="mt-3 text-lg text-zinc-200">
+            Test post content just to create the skeletons
+            bdsakhbdhkasgdhasgdhkasgdhkasghkdgashkdgashkdgashkdghask
+          </p>
           <p className="text-[14px] text-sky-600">
             #day #js #typescript #foda-se
           </p>
@@ -85,7 +92,8 @@ export const PrevPost = (props: TPrevPostProps) => {
               handleAddLikeForPost({ postId: props.id, postLike: props.likes })
             }
           >
-            <HeartFilledIcon className="h-4 w-4" />
+            {/* TODO: LOGIC TO SET FILL TO RED ONLY WHEN USER HAVE LIKED THE POST */}
+            <HeartFilledIcon fill="red" className="h-4 w-4" />
             {likesLength}
           </Button>
 

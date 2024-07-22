@@ -8,6 +8,8 @@ import { PrevPost, TPrevPostProps } from './PrevPost/PrevPost'
 export const Feed = async () => {
   const tokenJwt = await verifyJwtAction()
 
+  await new Promise((resolve) => setTimeout(resolve, 5000))
+
   const responseOfFetchUserPosts = await fetch(
     `${process.env.KEVLLOTTE_API_URL}/posts`,
     {
