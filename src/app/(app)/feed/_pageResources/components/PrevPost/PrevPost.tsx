@@ -3,57 +3,57 @@
 import { ArrowRight, Badge } from '@carbon/icons-react'
 import { Button } from '@nextui-org/button'
 import { Image } from '@nextui-org/image'
+import { useMutation } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { HeartFilledIcon } from '@/components/icons'
 
 import { MoreOptionsDropdown } from './Dropdown/Dropdown'
-import {
-  fetchAddOrRemoveLikeForPost,
-  TFetchAddOrRemoveLikeForPost,
-} from './fetchs/fetch-add-like-for-post'
+import { fetchAddOrRemoveLikeForPost } from './fetchs/fetch-add-like-for-post'
 import { fetchSaveOrRemoveSavedPost } from './fetchs/fetch-save-or-remove-saved-post'
 
 export const PrevPost = (props: TPrevPostProps) => {
   const [likesLength, setLikesLength] = useState<number>(props.likes.length)
-  const [isPending, startTransition] = useTransition()
 
-  const handleAddLikeForPost = async ({
-    postId,
-  }: TFetchAddOrRemoveLikeForPost) => {
-    startTransition(async () => {
-      const responseFetchAddLikeForPost = await fetchAddOrRemoveLikeForPost({
-        postId,
-      })
-
-      if (responseFetchAddLikeForPost === 201) {
+  const {
+    mutateAsync: handleAddOrRemoveLikePostMutation,
+    isPending: isLikePending,
+  } = useMutation({
+    mutationKey: [`${props.id}-likes`],
+    mutationFn: (postId: string) => fetchAddOrRemoveLikeForPost({ postId }),
+    onSuccess: (statusCode) => {
+      if (statusCode === 201) {
         return setLikesLength(likesLength + 1)
       }
 
       setLikesLength(likesLength - 1)
-    })
-  }
+    },
+  })
 
-  const handleSavePost = async (postId: string) => {
-    const saveOrRemoveSavedPostResponse =
-      await fetchSaveOrRemoveSavedPost(postId)
-
-    if (saveOrRemoveSavedPostResponse.status === 200) {
-      toast.success(saveOrRemoveSavedPostResponse.title, {
-        description: saveOrRemoveSavedPostResponse.description,
-      })
-    } else if (saveOrRemoveSavedPostResponse.status === 404) {
-      toast.success('Error!', {
-        description: 'Post not found. Please try again later.',
-      })
-    } else {
-      toast.success('Error!', {
-        description: 'There was an error when trying to save the post.',
-      })
-    }
-  }
+  const {
+    mutateAsync: handleSaveOrRemoveSavedPostMutation,
+    isPending: isSavePending,
+  } = useMutation({
+    mutationKey: [`${props.id}-save`],
+    mutationFn: (postId: string) => fetchSaveOrRemoveSavedPost({ postId }),
+    onSuccess: (data) => {
+      if (data.status === 200 || data.status === 204) {
+        toast.success(data.title, {
+          description: data.description,
+        })
+      } else if (data.status === 404) {
+        toast.success('Error!', {
+          description: 'Post not found. Please try again later.',
+        })
+      } else {
+        toast.error('Error!', {
+          description: 'There was an error when trying to save the post.',
+        })
+      }
+    },
+  })
 
   return (
     <div className="w-full max-w-[730px] border-b border-zinc-900 pb-6">
@@ -98,8 +98,8 @@ export const PrevPost = (props: TPrevPostProps) => {
             color="danger"
             size="sm"
             variant="flat"
-            isDisabled={isPending}
-            onClick={() => handleAddLikeForPost({ postId: props.id })}
+            isDisabled={isLikePending}
+            onClick={() => handleAddOrRemoveLikePostMutation(props.id)}
           >
             <HeartFilledIcon className="h-4 w-4" />
             {likesLength}
@@ -110,13 +110,14 @@ export const PrevPost = (props: TPrevPostProps) => {
             color="warning"
             size="sm"
             variant="flat"
-            onClick={() => handleSavePost(props.id)}
+            isDisabled={isSavePending}
+            onClick={() => handleSaveOrRemoveSavedPostMutation(props.id)}
           >
             <Badge className="h-4 w-4" />
             Save this post
           </Button>
 
-          <MoreOptionsDropdown />
+          <MoreOptionsDropdown userId={props.userId} />
         </div>
       </footer>
     </div>
@@ -127,7 +128,7 @@ export type TPrevPostLikeProps = {
   id: string
   authorId: string
   postId: string
-  createdAt: Date
+  createdAt: string
 }
 
 export type TPrevPostProps = {
@@ -136,9 +137,7 @@ export type TPrevPostProps = {
   content: string
   userId: string
   status: number
-  slug: {
-    value: string
-  }
+  slug: string
   likes: TPrevPostLikeProps[]
   createdAt: string
   updatedAt: string

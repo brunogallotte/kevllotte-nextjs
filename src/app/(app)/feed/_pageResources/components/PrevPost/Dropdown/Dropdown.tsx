@@ -15,11 +15,34 @@ import {
   DropdownTrigger,
 } from '@nextui-org/dropdown'
 import { useDisclosure } from '@nextui-org/modal'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
+import { fetchFollowOrUnfollowUser } from './fetchs/fetch-follow-or-unfollow-user'
 import { ReportModal } from './ReportModal'
 
-export const MoreOptionsDropdown = () => {
+export const MoreOptionsDropdown = ({ userId }: TMoreOptionsDropdown) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
+
+  const { mutateAsync: handleFollowOrUnfollowUserMutation } = useMutation({
+    mutationKey: [`${userId}-follow`],
+    mutationFn: (userId: string) => fetchFollowOrUnfollowUser({ userId }),
+    onSuccess: (data) => {
+      if (data.status === 200 || data.status === 204) {
+        toast.success(data.title, {
+          description: data.description,
+        })
+      } else if (data.status === 404) {
+        toast.success('Error!', {
+          description: 'Post not found. Please try again later.',
+        })
+      } else {
+        toast.error('Error!', {
+          description: 'There was an error when trying to follow this user.',
+        })
+      }
+    },
+  })
 
   return (
     <>
@@ -55,18 +78,22 @@ export const MoreOptionsDropdown = () => {
           }}
         >
           <DropdownSection showDivider aria-label="Profile & Actions">
-            <DropdownItem key="follow" startContent={<UserFollow />}>
+            <DropdownItem
+              key="follow"
+              startContent={<UserFollow />}
+              onClick={() => handleFollowOrUnfollowUserMutation(userId)}
+            >
               Follow this user
             </DropdownItem>
             <DropdownItem
-              key="follow"
+              key="recommend-more"
               description="Recommend more posts like this to me"
               startContent={<View />}
             >
               Show more
             </DropdownItem>
             <DropdownItem
-              key="follow"
+              key="recomend-less"
               description="Avoid showing me similar posts"
               startContent={<ViewOff />}
             >
@@ -92,4 +119,8 @@ export const MoreOptionsDropdown = () => {
       />
     </>
   )
+}
+
+export type TMoreOptionsDropdown = {
+  userId: string
 }

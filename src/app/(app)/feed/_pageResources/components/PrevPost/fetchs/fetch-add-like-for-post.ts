@@ -1,22 +1,16 @@
 'use server'
 
+import { fetchUserData } from '@/app/_actions/fetch-user-data'
 import { verifyJwtAction } from '@/app/_actions/verify-jwt-action'
 
 import type { TPrevPostLikeProps } from '../PrevPost'
 
 export const fetchAddOrRemoveLikeForPost = async ({
   postId,
-}: TFetchAddOrRemoveLikeForPost): Promise<number> => {
+}: TFetchAddOrRemoveLikeForPost) => {
   const tokenJwt = await verifyJwtAction()
 
-  const user = await fetch(`${process.env.KEVLLOTTE_API_URL}/me`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${tokenJwt.value}`,
-    },
-  })
-
-  const userData = await user.json()
+  const userData = await fetchUserData()
 
   const postLikes = await fetch(
     `${process.env.KEVLLOTTE_API_URL}/posts/${postId}/likes`,
@@ -40,7 +34,6 @@ export const fetchAddOrRemoveLikeForPost = async ({
       {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenJwt.value}`,
         },
       },

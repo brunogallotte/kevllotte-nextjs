@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@nextui-org/button'
 import { Input } from '@nextui-org/input'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -76,7 +77,12 @@ export const SignIn = () => {
           variant="bordered"
           {...register('password')}
         />
-        <span className="mr-auto mt-2 text-sky-600">Forget you password?</span>
+        <Link
+          href="/auth/forgot-password"
+          className="mr-auto mt-2 text-sky-600"
+        >
+          Forget your password?
+        </Link>
 
         <Button
           className="mt-8 w-full"

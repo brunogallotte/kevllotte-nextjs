@@ -4,7 +4,9 @@ import { verifyJwtAction } from '@/app/_actions/verify-jwt-action'
 
 import type { TPrevPostProps } from '../PrevPost'
 
-export const fetchSaveOrRemoveSavedPost = async (postId: string) => {
+export const fetchSaveOrRemoveSavedPost = async ({
+  postId,
+}: TFetchSaveOrRemoveSavedPost) => {
   const tokenJwt = await verifyJwtAction()
 
   const savedPosts = await fetch(
@@ -60,4 +62,8 @@ export const fetchSaveOrRemoveSavedPost = async (postId: string) => {
 
 export type TSavedPostsData = {
   savedPosts: TPrevPostProps[]
+}
+
+export type TFetchSaveOrRemoveSavedPost = {
+  postId: string
 }

@@ -1,13 +1,13 @@
 'use server'
 
-import { cookies } from 'next/headers'
-
 import type { TUser } from '@/types'
 
-export const fetchUserData = async (): Promise<TUser> => {
-  const tokenJwt = cookies().get('tokenAccess')
+import { verifyJwtAction } from './verify-jwt-action'
 
-  const fetchUserDataResponse = await fetch(
+export const fetchUserData = async (): Promise<TUser> => {
+  const tokenJwt = await verifyJwtAction()
+
+  const userInformationsResponse = await fetch(
     `${process.env.KEVLLOTTE_API_URL}/me`,
     {
       method: 'GET',
@@ -17,7 +17,7 @@ export const fetchUserData = async (): Promise<TUser> => {
     },
   )
 
-  const fetchUserDataResponseJson = await fetchUserDataResponse.json()
+  const userInformationsData = await userInformationsResponse.json()
 
-  return fetchUserDataResponseJson
+  return userInformationsData
 }
