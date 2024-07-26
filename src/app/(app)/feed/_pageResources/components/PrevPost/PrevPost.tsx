@@ -44,7 +44,7 @@ export const PrevPost = (props: TPrevPostProps) => {
           description: data.description,
         })
       } else if (data.status === 404) {
-        toast.success('Error!', {
+        toast.error('Error!', {
           description: 'Post not found. Please try again later.',
         })
       } else {
@@ -69,7 +69,9 @@ export const PrevPost = (props: TPrevPostProps) => {
       <div className="mt-4 flex items-center justify-between">
         <div className="flex w-full max-w-md flex-col gap-1 overflow-hidden">
           <b className="truncate text-3xl text-zinc-100">{props.title}</b>
-          <p className="mt-3 text-lg text-zinc-200">{props.content}</p>
+          <p className="mt-3 line-clamp-2 text-lg text-zinc-200">
+            {props.content}
+          </p>
           <p className="text-[14px] text-sky-600">
             #day #js #typescript #foda-se
           </p>
@@ -94,7 +96,7 @@ export const PrevPost = (props: TPrevPostProps) => {
         </Button>
         <div className="ml-auto flex items-center gap-2">
           <Button
-            className="items-centergap-1 flex"
+            className="flex w-20 items-center gap-1"
             color="danger"
             size="sm"
             variant="flat"
@@ -117,7 +119,7 @@ export const PrevPost = (props: TPrevPostProps) => {
             Save this post
           </Button>
 
-          <MoreOptionsDropdown userId={props.userId} />
+          <MoreOptionsDropdown post={props} />
         </div>
       </footer>
     </div>

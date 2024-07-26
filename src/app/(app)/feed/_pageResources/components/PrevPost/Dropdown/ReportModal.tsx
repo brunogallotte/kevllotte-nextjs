@@ -6,24 +6,58 @@ import { Checkbox } from '@nextui-org/checkbox'
 import { Textarea } from '@nextui-org/input'
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/modal'
 import { Select, SelectItem } from '@nextui-org/select'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
+
+import type { TPrevPostProps } from '../PrevPost'
+import { fetchReportPost } from './fetchs/fetch-report-post'
 
 export const ReportModal = ({
   onClose,
   isOpen,
   onOpenChange,
+  post,
 }: TReportModal) => {
   const [selectValue, setSelectValue] = useState<string>('')
 
-  const { register, handleSubmit, formState } = useForm<TReportSchema>({
+  const { register, handleSubmit, formState, reset } = useForm<TReportSchema>({
     resolver: zodResolver(reportSchema),
   })
 
-  const onSubmit = (data: TReportSchema) => {
-    console.log(data)
+  const { mutateAsync: handleReportPostMutation } = useMutation({
+    mutationKey: [`post-${post.id}-report`],
+    mutationFn: async ({ reason, description, blockAuthor }: TReportSchema) =>
+      // TODO: BLOCK AUTHOR WHEN REPORTING A POST IF BLOCKAUTHOR IS TRUE
 
+      await fetchReportPost({
+        postId: post.id,
+        reason,
+        description: description ?? undefined,
+      }),
+    onSuccess: (data) => {
+      if (data.status === 201) {
+        toast.success(data.title, {
+          description: data.description,
+        })
+      } else {
+        toast.error('Error!', {
+          description: 'There was an error when trying to report this post.',
+        })
+      }
+    },
+  })
+
+  const onSubmit = async (data: TReportSchema) => {
+    await handleReportPostMutation({
+      reason: data.reason,
+      description: data.description,
+      blockAuthor: data.blockAuthor,
+    })
+
+    reset()
     onClose()
   }
 
@@ -101,4 +135,5 @@ type TReportModal = {
   isOpen: boolean
   onClose: () => void
   onOpenChange: () => void
+  post: TPrevPostProps
 }

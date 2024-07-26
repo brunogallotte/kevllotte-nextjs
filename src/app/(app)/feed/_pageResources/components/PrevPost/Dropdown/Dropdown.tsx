@@ -18,14 +18,15 @@ import { useDisclosure } from '@nextui-org/modal'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import type { TPrevPostProps } from '../PrevPost'
 import { fetchFollowOrUnfollowUser } from './fetchs/fetch-follow-or-unfollow-user'
 import { ReportModal } from './ReportModal'
 
-export const MoreOptionsDropdown = ({ userId }: TMoreOptionsDropdown) => {
+export const MoreOptionsDropdown = ({ post }: TMoreOptionsDropdown) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   const { mutateAsync: handleFollowOrUnfollowUserMutation } = useMutation({
-    mutationKey: [`${userId}-follow`],
+    mutationKey: [`${post.userId}-follow`],
     mutationFn: (userId: string) => fetchFollowOrUnfollowUser({ userId }),
     onSuccess: (data) => {
       if (data.status === 200 || data.status === 204) {
@@ -33,7 +34,7 @@ export const MoreOptionsDropdown = ({ userId }: TMoreOptionsDropdown) => {
           description: data.description,
         })
       } else if (data.status === 404) {
-        toast.success('Error!', {
+        toast.error('Error!', {
           description: 'Post not found. Please try again later.',
         })
       } else {
@@ -81,7 +82,7 @@ export const MoreOptionsDropdown = ({ userId }: TMoreOptionsDropdown) => {
             <DropdownItem
               key="follow"
               startContent={<UserFollow />}
-              onClick={() => handleFollowOrUnfollowUserMutation(userId)}
+              onClick={() => handleFollowOrUnfollowUserMutation(post.userId)}
             >
               Follow this user
             </DropdownItem>
@@ -116,11 +117,12 @@ export const MoreOptionsDropdown = ({ userId }: TMoreOptionsDropdown) => {
         isOpen={isOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
+        post={post}
       />
     </>
   )
 }
 
 export type TMoreOptionsDropdown = {
-  userId: string
+  post: TPrevPostProps
 }

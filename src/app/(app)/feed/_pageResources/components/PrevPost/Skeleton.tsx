@@ -37,7 +37,7 @@ export function PrevPostSkeleton() {
             <Skeleton className="ml-3 h-8 w-[95px] rounded-small bg-zinc-900" />
 
             <div className="ml-auto flex items-center gap-2">
-              <Skeleton className="h-8 w-16 rounded-small bg-zinc-900" />
+              <Skeleton className="h-8 w-20 rounded-small bg-zinc-900" />
 
               <Skeleton className="h-8 w-[121px] rounded-small bg-zinc-900" />
 

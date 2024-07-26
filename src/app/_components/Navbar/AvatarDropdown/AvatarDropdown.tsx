@@ -46,13 +46,13 @@ export const AvatarDropdown = () => {
             <p className="font-bold">Signed in as</p>
             <p className="font-bold">@{user?.author.username}</p>
           </DropdownItem>
-          <DropdownItem key="analytics" startContent={<UserFilled />}>
+          <DropdownItem key="my-profile" startContent={<UserFilled />}>
             My profile
           </DropdownItem>
           <DropdownItem key="analytics" startContent={<ChartLine />}>
             Analytics
           </DropdownItem>
-          <DropdownItem key="help_and_feedback" startContent={<Help />}>
+          <DropdownItem key="help-and-feedback" startContent={<Help />}>
             Help & Feedback
           </DropdownItem>
           <DropdownItem key="settings" startContent={<Settings />}>
